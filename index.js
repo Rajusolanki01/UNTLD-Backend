@@ -15,6 +15,7 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const colors = require("colors");
+const cors = require("cors");
 
 dotenv.config();
 const app = express();
@@ -25,6 +26,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("common"));
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 app.use("/api/user", authRouter);
 app.use("/api/product", productRouter);
