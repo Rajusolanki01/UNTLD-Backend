@@ -11,11 +11,7 @@ const createProduct = async (req, res) => {
       req.body.slug = slugify(req.body.title);
     }
     const newProduct = await Product.create(req.body);
-    return res.send(
-      success(201, {
-        newProduct,
-      })
-    );
+    return res.send(success(201, newProduct));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -62,12 +58,8 @@ const getAllProduct = async (req, res) => {
         return res.send(error(404, "This Page does not exists"));
     }
 
-    const getAllProducts = await query;
-    return res.send(
-      success(200, {
-        getAllProducts,
-      })
-    );
+    const products = await query;
+    return res.send(success(200, products));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -80,11 +72,7 @@ const getSingleProduct = async (req, res) => {
     const { id } = req.params;
     ValidateMongoDbId(id);
     const findProuduct = await Product.findById(id);
-    return res.send(
-      success(200, {
-        findProuduct,
-      })
-    );
+    return res.send(success(200, findProuduct));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -111,11 +99,7 @@ const updateaProduct = async (req, res) => {
     if (!updateProduct) {
       return res.send(error(404, "Product not Found"));
     } else {
-      return res.send(
-        success(200, {
-          updateProduct,
-        })
-      );
+      return res.send(success(200, updateProduct));
     }
   } catch (e) {
     return res.send(error(500, e.message));
@@ -131,11 +115,7 @@ const deleteaProduct = async (req, res) => {
 
     const deleteProduct = await Product.findOneAndDelete({ _id: id });
 
-    return res.send(
-      success(200, {
-        deleteProduct,
-      })
-    );
+    return res.send(success(201, "Product is Deleted"));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -239,11 +219,7 @@ const rating = async (req, res) => {
       { new: true }
     );
 
-    return res.send(
-      success(200, {
-        finalproduct,
-      })
-    );
+    return res.send(success(200, finalproduct));
   } catch (e) {
     return res.send(error(500, e.message));
   }

@@ -5,7 +5,7 @@ const ValidateMongoDbId = require("../utils/validateMongodbId");
 const createCoupon = async (req, res) => {
   try {
     const newCoupon = await Coupon.create(req.body);
-    return res.send(success(201, newCoupon));
+    return res.send(success(201, `${newCoupon.name} coupon is create`));
   } catch (e) {
     return res.send(error(200, e.message));
   }
@@ -38,7 +38,7 @@ const updateCoupon = async (req, res) => {
     const updatedCoupon = await Coupon.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    return res.send(success(200, updatedCoupon));
+    return res.send(success(201, `${updatedCoupon.name} coupon is update`));
   } catch (e) {
     return res.send(error(200, e.message));
   }
@@ -49,7 +49,7 @@ const deleteCoupon = async (req, res) => {
   ValidateMongoDbId(id);
   try {
     const deletedCoupon = await Coupon.findByIdAndDelete(id);
-    return res.send(success(200, "Coupon is Deleted"));
+    return res.send(success(201, `${deletedCoupon.name} coupon is delete`));
   } catch (e) {
     return res.send(error(200, e.message));
   }

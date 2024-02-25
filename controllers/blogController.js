@@ -34,7 +34,7 @@ const createBlog = async (req, res) => {
 
     //* If no duplicates found, create the new blog
     const newBlog = await Blog.create(req.body);
-    res.send(success(201, newBlog));
+    res.send(success(201, `${newBlog.title} blog is create`));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -47,7 +47,7 @@ const updateBlog = async (req, res) => {
     const updatedBlog = await Blog.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    res.send(success(201, updatedBlog));
+    res.send(success(201, `${updatedBlog.title} blog is update`));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -93,7 +93,7 @@ const deleteaBlog = async (req, res) => {
     if (!deleteBlog) {
       return res.send(error(404, "Blogs not found."));
     }
-    res.send(success(200, "Blog Deleted Successfully"));
+    res.send(success(201, `${deleteBlog.title} is Delete`));
   } catch (e) {
     return res.send(error(500, e.message));
   }

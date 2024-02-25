@@ -5,12 +5,11 @@ const ValidateMongoDbId = require("../utils/validateMongodbId");
 const createColor = async (req, res) => {
   try {
     const newColor = await Color.create(req.body);
-    return res.send(success(200, newColor));
+    return res.send(success(201, `${newColor.title} color is create`));
   } catch (e) {
     return res.send(error(200, e.message));
   }
 };
-
 
 const updateColor = async (req, res) => {
   const { id } = req.params;
@@ -19,12 +18,11 @@ const updateColor = async (req, res) => {
     const updatedColor = await Color.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    return res.send(success(200, updatedColor));
+    return res.send(success(201, `${updatedColor.title} color is update`));
   } catch (e) {
     return res.send(error(200, e.message));
   }
 };
-
 
 const getColor = async (req, res) => {
   const { id } = req.params;
@@ -51,7 +49,7 @@ const deleteColor = async (req, res) => {
   ValidateMongoDbId(id);
   try {
     const deletedColor = await Color.findByIdAndDelete(id);
-    return res.send(success(200, `${deletedColor.title} Color is Deleted`));
+    return res.send(success(201, `${deletedColor.title} Color is Deleted`));
   } catch (e) {
     return res.send(error(200, e.message));
   }

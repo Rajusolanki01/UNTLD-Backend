@@ -3,13 +3,13 @@ const sharp = require("sharp"); //* we can change the image dimension format qua
 const path = require("path"); //* handle locally to transfer in cloud
 const fs = require("fs");
 
-const storage = multer.diskStorage({
+const multerStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../public/images/"));
+    cb(null, path.join(__dirname, "../public/images"));
   },
   filename: function (req, file, cb) {
     const uniquesuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniquesuffix + ".jpeg");
+    cb(null, file.filename + "-" + uniquesuffix + ".jpeg");
   },
 });
 
@@ -22,7 +22,7 @@ const multerFilter = (req, file, cb) => {
 };
 
 const uploadPhotos = multer({
-  storage: storage,
+  storage: multerStorage,
   fileFilter: multerFilter,
   limits: { fieldSize: 2000000 },
 });
@@ -52,8 +52,8 @@ const blogImageResize = async (req, res, next) => {
         .resize(300, 300)
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
-        .toFile(`public/images/${file.filename}`);
-      fs.unlinkSync(`public/images/${file.filename}`);
+        .toFile(`public/images/blogs/${file.filename}`);
+      fs.unlinkSync(`public/images/blogs/${file.filename}`);
     })
   );
   next();

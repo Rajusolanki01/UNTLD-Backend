@@ -5,9 +5,9 @@ const ValidateMongoDbId = require("../utils/validateMongodbId");
 const createBlogCategory = async (req, res) => {
   try {
     const newCategory = await BlogCategory.create(req.body);
-    return res.send(success(200, newCategory));
+    return res.send(success(201, `${newCategory.title} blog category add`));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 const updateBlogCategory = async (req, res) => {
@@ -17,9 +17,11 @@ const updateBlogCategory = async (req, res) => {
     const updatedCategory = await BlogCategory.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    return res.send(success(200, updatedCategory));
+    return res.send(
+      success(201, `${updatedCategory.title} blog is category update`)
+    );
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 const deleteBlogCategory = async (req, res) => {
@@ -27,9 +29,9 @@ const deleteBlogCategory = async (req, res) => {
   ValidateMongoDbId(id);
   try {
     const deletedCategory = await BlogCategory.findByIdAndDelete(id);
-    return res.send(success(200, "BlogCategory is Deleted"));
+    return res.send(success(201, `${deletedCategory.title} is delete`));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 const getBlogCategory = async (req, res) => {
@@ -39,7 +41,7 @@ const getBlogCategory = async (req, res) => {
     const getaCategory = await BlogCategory.findById(id);
     return res.send(success(200, getaCategory));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 const getallBlogCategory = async (req, res) => {
@@ -47,7 +49,7 @@ const getallBlogCategory = async (req, res) => {
     const getallCategory = await BlogCategory.find();
     return res.send(success(200, getallCategory));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 module.exports = {

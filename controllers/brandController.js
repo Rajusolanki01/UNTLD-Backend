@@ -5,7 +5,7 @@ const ValidateMongoDbId = require("../utils/validateMongodbId");
 const createBrand = async (req, res) => {
   try {
     const newBrand = await Brand.create(req.body);
-    return res.send(success(200, newBrand));
+    return res.send(success(201, `${newBrand.title} is Added`));
   } catch (e) {
     return res.send(error(200, e.message));
   }
@@ -27,7 +27,7 @@ const deleteBrand = async (req, res) => {
   ValidateMongoDbId(id);
   try {
     const deletedBrand = await Brand.findByIdAndDelete(id);
-    return res.send(success(200, `${deletedBrand.title} Brand is Deleted`));
+    return res.send(success(201, `${deletedBrand.title} Brand is Deleted`));
   } catch (e) {
     return res.send(error(200, e.message));
   }

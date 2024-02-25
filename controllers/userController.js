@@ -25,7 +25,7 @@ const createUser = async (req, res) => {
 
     if (!findUser) {
       const newUser = await User.create(req.body);
-      res.json(newUser);
+      return res.send(success(201, newUser));
     } else {
       return res.send(error(409, "User is Already Registered"));
     }
@@ -42,6 +42,10 @@ const loginUser = async (req, res) => {
 
     if (!findUser) {
       return res.send(error(409, "User is Not Registered"));
+    }
+
+    if (findUser.isBlocked) {
+      return res.send(error(403, "Sorry You are blocked by the UNTLD. Admin"));
     }
 
     const refreshToken = await generateJwtRefreshToken({
@@ -62,17 +66,19 @@ const loginUser = async (req, res) => {
       maxAge: 72 * 60 * 60 * 1000,
     });
     if (findUser && (await findUser.isPasswordMatched(password))) {
-      res.json({
-        _id: findUser?._id,
-        firstname: findUser?.firstname,
-        lastname: findUser?.lastname,
-        email: findUser?.email,
-        mobile: findUser?.mobile,
-        accessToken: generateJwtToken({
-          _id: findUser._id,
-          email: findUser.email,
-        }),
-      });
+      return res.send(
+        success(200, {
+          _id: findUser?._id,
+          firstname: findUser?.firstname,
+          lastname: findUser?.lastname,
+          email: findUser?.email,
+          mobile: findUser?.mobile,
+          accessToken: generateJwtToken({
+            _id: findUser._id,
+            email: findUser.email,
+          }),
+        })
+      );
     } else {
       return res.send(error(403, "Invalid Credentials"));
     }
@@ -119,15 +125,19 @@ const adminLogin = async (req, res) => {
         secure: true,
         maxAge: 72 * 60 * 60 * 1000,
       });
-
-      res.json({
-        _id: findAdmin._id,
-        firstname: findAdmin.firstname,
-        lastname: findAdmin.lastname,
-        email: findAdmin.email,
-        mobile: findAdmin.mobile,
-        token: generateJwtToken({ _id: findAdmin._id, email: findAdmin.email }),
-      });
+      return res.send(
+        success(200, {
+          _id: findAdmin._id,
+          firstname: findAdmin.firstname,
+          lastname: findAdmin.lastname,
+          email: findAdmin.email,
+          mobile: findAdmin.mobile,
+          accessToken: generateJwtToken({
+            _id: findAdmin._id,
+            email: findAdmin.email,
+          }),
+        })
+      );
     } else {
       return res.send(error(409, "Invalid Credentials"));
     }
@@ -165,8 +175,7 @@ const refreshAccessToken = async (req, res) => {
         _id: user._id,
         email: user.email,
       });
-
-      res.json({ accessToken });
+      return res.send(success(200, { accessToken }));
     });
   } catch (e) {
     return res.send(error(500, e.message));
@@ -191,7 +200,7 @@ const saveAddress = async (req, res) => {
       }
     );
 
-    return res.send(success(200, updatedUser));
+    return res.send(success(201, updatedUser));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -202,7 +211,7 @@ const saveAddress = async (req, res) => {
 const getAllUser = async (req, res) => {
   try {
     const getUser = await User.find();
-    return res.json(getUser);
+    return res.send(success(200, getUser));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -216,9 +225,7 @@ const getSingleUser = async (req, res) => {
     ValidateMongoDbId(id);
 
     const getaUser = await User.findById(id);
-    res.json({
-      getaUser,
-    });
+    return res.send(success(200, getaUser));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -244,9 +251,9 @@ const updateaUser = async (req, res) => {
       }
     );
     if (updatedUser) {
-      res.json(updatedUser);
+      return res.send(success(200, updatedUser));
     } else {
-      return res.send(success(200, "User Already Updated"));
+      return res.send(success(201, "User Already Updated"));
     }
   } catch (e) {
     return res.send(error(500, e.message));
@@ -266,7 +273,7 @@ const deleteaUser = async (req, res) => {
         deleteUser,
       });
     } else {
-      return res.send(success(200, "User Already Deleted"));
+      return res.send(success(201, "User Already Deleted"));
     }
   } catch (e) {
     return res.send(error(500, e.message));
@@ -289,11 +296,9 @@ const blockedUser = async (req, res) => {
       }
     );
     if (blockUser) {
-      res.json({
-        message: "User Blocked",
-      });
+      return res.send(success(201, "User Blocked"));
     } else {
-      return res.send(success(200, "User Already Blocked"));
+      return res.send(success(201, "User Already Blocked"));
     }
   } catch (e) {
     return res.send(error(500, e.message));
@@ -315,11 +320,9 @@ const unBlockedUser = async (req, res) => {
       }
     );
     if (unBlockUser) {
-      res.json({
-        message: "User UnBlocked",
-      });
+      return res.send(success(201, "User Unblocked"));
     } else {
-      return res.send(success(200, "User Already UnBlocked"));
+      return res.send(success(201, "User Already Unblocked"));
     }
   } catch (e) {
     return res.send(error(500, e.message));
@@ -357,7 +360,7 @@ const logoutUser = async (req, res) => {
       secure: true,
       expires: new Date(0),
     });
-    return res.send(success(204, "User Logout Successfully"));
+    return res.send(success(201, "User Logout Successfully"));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -372,7 +375,7 @@ const updatePassword = async (req, res) => {
     if (password) {
       user.password = password;
       const updatedPassword = await user.save();
-      return res.send(success(200, "Password is Update"));
+      return res.send(success(201, "Password is Update"));
     } else {
       return res.send(error(404, "Password is not Update"));
     }
@@ -384,7 +387,7 @@ const updatePassword = async (req, res) => {
 const forgotPasswordToken = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne(email);
+    const user = await User.findOne({ email });
     if (!user) return res.send(error(404, "User Not Found"));
     const token = await user.createPasswordResetToken();
     await user.save();
@@ -394,7 +397,7 @@ const forgotPasswordToken = async (req, res) => {
       </div>
       <div style="font-size: 16px; color: #333; text-align: center;">
         Hey ${user.firstname}, here's your password reset link! Valid till 10 mintues from now
-       <a href='http://localhost:8000/api/user/reset-password/${token}'>Click
+       <a href='http://localhost:3000/reset-password/${token}'>Click
       </div>
     `;
     const data = {
@@ -404,7 +407,7 @@ const forgotPasswordToken = async (req, res) => {
       html: resetURL,
     };
     sendEmails(data);
-    res.send(success(200, "Forgot Password is Send to your Email"));
+    res.send(success(201, "Link Send to your Email"));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -426,7 +429,7 @@ const resetPassword = async (req, res) => {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save();
-    res.send(success(200, "Your Password is Reset"));
+    res.send(success(201, "Your Password is Reset"));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -493,7 +496,7 @@ const addToCart = async (req, res) => {
 
     await newCart.save();
 
-    return res.send(success(201, newCart));
+    return res.send(success(200, newCart));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -568,7 +571,7 @@ const applyCoupon = async (req, res) => {
       { new: true }
     );
     return res.send(
-      success(204, `Your Total Disocunt is ${totalAfterDiscount}`)
+      success(201, `Your Total Disocunt is ${totalAfterDiscount}`)
     );
   } catch (e) {
     console.log(e);
@@ -623,7 +626,7 @@ const createOrder = async (req, res) => {
 
     const updated = await Product.bulkWrite(update, {});
 
-    return res.send(error(201, "Success"));
+    return res.send(success(201, "Success"));
   } catch (e) {
     console.log(e);
     return res.send(error(500, e.message));
@@ -641,7 +644,7 @@ const getOrders = async (req, res) => {
       .populate("products.product")
       .populate("orderby")
       .exec();
-    return res.send(error(200, userOrders));
+    return res.send(success(200, userOrders));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -655,7 +658,7 @@ const getAllOrders = async (req, res) => {
       .populate("products.product")
       .populate("orderby")
       .exec();
-    return res.send(error(200, allUserOrders));
+    return res.send(success(200, allUserOrders));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -673,7 +676,7 @@ const getOrderByUserId = async (req, res) => {
       .populate("products.product")
       .populate("orderby")
       .exec();
-    return res.send(error(200, userOrders));
+    return res.send(success(200, userOrders));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -701,7 +704,7 @@ const updateOrderStatus = async (req, res) => {
     if (!updatedOrderStatus) {
       return res.send(error(404, "Order not found"));
     }
-    return res.send(error(200, updatedOrderStatus));
+    return res.send(success(200, updatedOrderStatus));
   } catch (e) {
     return res.send(error(500, e.message));
   }

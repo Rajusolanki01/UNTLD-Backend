@@ -7,6 +7,7 @@ const {
 } = require("../utils/cloudinary");
 
 const uploadImages = async (req, res) => {
+  console.log(req.files);
   try {
     const uploader = (path) => cloudinaryUploadsImg(path, "images");
     const urls = [];

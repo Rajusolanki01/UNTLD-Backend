@@ -83,7 +83,7 @@ userSchema.methods.createPasswordResetToken = async function () {
     return resetToken;
   } catch (error) {
     console.error("Error generating password reset token:", error);
-    throw error; // Propagate the error up the stack
+    throw error;
   }
 };
 
