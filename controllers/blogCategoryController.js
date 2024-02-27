@@ -5,7 +5,7 @@ const ValidateMongoDbId = require("../utils/validateMongodbId");
 const createBlogCategory = async (req, res) => {
   try {
     const newCategory = await BlogCategory.create(req.body);
-    return res.send(success(201, `${newCategory.title} blog category add`));
+    return res.send(success(201, `${newCategory.title} blog category Add`));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -18,7 +18,7 @@ const updateBlogCategory = async (req, res) => {
       new: true,
     });
     return res.send(
-      success(201, `${updatedCategory.title} blog is category update`)
+      success(201, `${updatedCategory.title} blog category is Update`)
     );
   } catch (e) {
     return res.send(error(500, e.message));
@@ -29,7 +29,7 @@ const deleteBlogCategory = async (req, res) => {
   ValidateMongoDbId(id);
   try {
     const deletedCategory = await BlogCategory.findByIdAndDelete(id);
-    return res.send(success(201, `${deletedCategory.title} is delete`));
+    return res.send(success(201, `${deletedCategory.title} is Delete`));
   } catch (e) {
     return res.send(error(500, e.message));
   }

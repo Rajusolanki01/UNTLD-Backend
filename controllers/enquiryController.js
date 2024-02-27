@@ -7,7 +7,7 @@ const createEnquiry = async (req, res) => {
     const createEnquiry = await Enquiry.create(req.body);
     return res.send(success(201, `${createEnquiry.name} Enquiry is create`));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 
@@ -21,10 +21,10 @@ const updateEnquiry = async (req, res) => {
     if (updateEnquiry) {
       return res.send(success(201, `${updateEnquiry.name} Enquiry is update`));
     } else {
-      return res.send(success(201, "There is no Enquiry"));
+      return res.send(error(403, "There is no Enquiry"));
     }
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 
@@ -35,7 +35,7 @@ const deleteEnquiry = async (req, res) => {
     const deleteEnquiry = await Enquiry.findByIdAndDelete(id);
     return res.send(success(201, `${deleteEnquiry.name} enquiry is delete`));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 
@@ -46,7 +46,7 @@ const getEnquiry = async (req, res) => {
     const getEnquiry = await Enquiry.findById(id);
     return res.send(success(200, getEnquiry));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 
@@ -55,7 +55,7 @@ const getallEnquiry = async (req, res) => {
     const getallEnquiry = await Enquiry.find();
     return res.send(success(200, getallEnquiry));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 

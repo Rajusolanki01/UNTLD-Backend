@@ -25,7 +25,12 @@ const createUser = async (req, res) => {
 
     if (!findUser) {
       const newUser = await User.create(req.body);
-      return res.send(success(201, newUser));
+      return res.send(
+        success(
+          201,
+          `${newUser.firstname} ${newUser.lastname} account is create `
+        )
+      );
     } else {
       return res.send(error(409, "User is Already Registered"));
     }
