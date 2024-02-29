@@ -17,14 +17,13 @@ const {
   getWishList,
   saveAddress,
   addToCart,
-  getUserCart,
   emptyUserCart,
   applyCoupon,
   createOrder,
   getAllOrders,
-  getOrders,
   getOrderByUserId,
   updateOrderStatus,
+  getaUserCart,
 } = require("../controllers/userController");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const router = express.Router();
@@ -65,10 +64,6 @@ router.get("/refresh-token", refreshAccessToken);
 //* GET ALL USER
 router.get("/all-users", getAllUser);
 
-//* GET A SINGLE ORDER BY USER
-
-router.get("/get-orders", authMiddleware, getOrders);
-
 //* GET ALL USER ORDERS
 
 router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
@@ -80,6 +75,9 @@ router.get("/getorderbyuser/:id", authMiddleware, isAdmin, getOrderByUserId);
 //* Get Wishlist *//
 
 router.get("/wishlist", authMiddleware, getWishList);
+
+//* Get User Cart *//
+router.get("/usercart", authMiddleware, getaUserCart);
 
 //*  LOGOUT
 router.get("/logout", logoutUser);

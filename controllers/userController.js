@@ -461,7 +461,8 @@ const addToCart = async (req, res) => {
 
     let products = [];
     const user = await User.findById(_id);
-    // check if user already has a cart
+
+    //* check if user already has a cart
     const alreadyExistCart = await Cart.findOne({ orderby: user._id });
     if (alreadyExistCart) {
       await Cart.deleteOne({ _id: alreadyExistCart._id });
@@ -473,19 +474,22 @@ const addToCart = async (req, res) => {
       object.count = cart[i].count;
       object.color = cart[i].color;
 
-      // Find the product by ID
+      //* Find the product by ID
       const getProduct = await Product.findById(cart[i]._id);
 
-      // Check if the product is found
+      //* Check if the product is found
       if (!getProduct) {
         return res.send(
           error(404, `Product with ID ${cart[i].product} not found`)
         );
       }
 
-      // Access the 'price' property if the product is found
+      //* Access the 'price' property if the product is found
       object.price = getProduct.price;
       products.push(object);
+
+      //* Remove the product from wishlist if it exists
+      user.wishList.pull(cart[i]._id);
     }
 
     let cartTotal = 0;
@@ -501,7 +505,16 @@ const addToCart = async (req, res) => {
 
     await newCart.save();
 
-    return res.send(success(200, newCart));
+    let updateUser = await User.findByIdAndUpdate(
+      _id,
+      {
+        $push: { cart: newCart },
+      },
+      {
+        new: true,
+      }
+    );
+    return res.send(success(201, "Product is Add To Cart"));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -509,9 +522,11 @@ const addToCart = async (req, res) => {
 
 //* get User Cart controller *//
 
-const getUserCart = async (req, res) => {
+const getaUserCart = async (req, res) => {
   try {
+    console.log("heloo");
     const { _id } = req.user;
+    console.log(_id);
     ValidateMongoDbId(_id);
 
     const cart = await Cart.findOne({ orderby: _id }).populate(
@@ -638,32 +653,16 @@ const createOrder = async (req, res) => {
   }
 };
 
-//*Get Order User controller *//
-
-const getOrders = async (req, res) => {
-  try {
-    const { _id } = req.user;
-    ValidateMongoDbId(_id);
-
-    const userOrders = await Order.findOne({ orderby: _id })
-      .populate("products.product")
-      .populate("orderby")
-      .exec();
-    return res.send(success(200, userOrders));
-  } catch (e) {
-    return res.send(error(500, e.message));
-  }
-};
 
 //*Get All Orders User controller *//
 
 const getAllOrders = async (req, res) => {
   try {
-    const allUserOrders = await Order.find()
+    const allUsersOrders = await Order.find()
       .populate("products.product")
       .populate("orderby")
       .exec();
-    return res.send(success(200, allUserOrders));
+    return res.send(success(200, allUsersOrders));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -733,11 +732,10 @@ module.exports = {
   resetPassword,
   getWishList,
   addToCart,
-  getUserCart,
+  getaUserCart,
   emptyUserCart,
   applyCoupon,
   createOrder,
-  getOrders,
   updateOrderStatus,
   getAllOrders,
   getOrderByUserId,
