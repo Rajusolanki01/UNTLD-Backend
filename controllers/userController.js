@@ -653,8 +653,23 @@ const createOrder = async (req, res) => {
   }
 };
 
-
 //*Get All Orders User controller *//
+
+const getOrders = async (req, res) => {
+  try {
+    const { _id } = req.user;
+    console.log(id);
+    ValidateMongoDbId(id);
+
+    const userOrders = await Order.findOne({ orderby: _id })
+      .populate("products.product")
+      .populate("orderby")
+      .exec();
+    return res.send(success(200, userOrders));
+  } catch (e) {
+    return res.send(error(500, e.message));
+  }
+};
 
 const getAllOrders = async (req, res) => {
   try {
@@ -673,7 +688,6 @@ const getAllOrders = async (req, res) => {
 const getOrderByUserId = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
     ValidateMongoDbId(id);
 
     const userOrders = await Order.findOne({ orderby: id })
@@ -737,6 +751,7 @@ module.exports = {
   applyCoupon,
   createOrder,
   updateOrderStatus,
+  getOrders,
   getAllOrders,
   getOrderByUserId,
 };
