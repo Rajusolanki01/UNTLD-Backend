@@ -22,15 +22,15 @@ const createBlog = async (req, res) => {
       );
     }
 
-    //* Check if a blog with the same category exists
-    const existingBlogWithCategory = await Blog.findOne({
-      category: req.body.category,
-    });
-    if (existingBlogWithCategory) {
-      return res.send(
-        error(400, "Blog with the same category already exists.")
-      );
-    }
+    // //* Check if a blog with the same category exists
+    // const existingBlogWithCategory = await Blog.findOne({
+    //   category: req.body.category,
+    // });
+    // if (existingBlogWithCategory) {
+    //   return res.send(
+    //     error(400, "Blog with the same category already exists.")
+    //   );
+    // }
 
     //* If no duplicates found, create the new blog
     const newBlog = await Blog.create(req.body);

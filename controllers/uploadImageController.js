@@ -7,7 +7,6 @@ const {
 } = require("../utils/cloudinary");
 
 const uploadImages = async (req, res) => {
-  console.log(req.files);
   try {
     const uploader = (path) => cloudinaryUploadsImg(path, "images");
     const urls = [];
@@ -32,8 +31,8 @@ const uploadImages = async (req, res) => {
 const deleteImages = async (req, res) => {
   const { id } = req.params;
   try {
-    const deleted = cloudinaryDeleteImg(id, "images");
-    return res.send(success(200, "Images Deleted"));
+    await cloudinaryDeleteImg(id, "images");
+    return res.send(success(200, id));
   } catch (e) {
     return res.send(error(500, e.message));
   }

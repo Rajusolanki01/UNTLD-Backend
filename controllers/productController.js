@@ -11,7 +11,7 @@ const createProduct = async (req, res) => {
       req.body.slug = slugify(req.body.title);
     }
     const newProduct = await Product.create(req.body);
-    return res.send(success(201, newProduct));
+    return res.send(success(201, `${newProduct.title} Product is Added`));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -75,7 +75,7 @@ const getSingleProduct = async (req, res) => {
     return res.send(success(200, findProuduct));
   } catch (e) {
     return res.send(error(500, e.message));
-  }
+  } 
 };
 
 // * Update A Product *//

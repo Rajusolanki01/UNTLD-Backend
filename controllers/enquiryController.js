@@ -1,5 +1,6 @@
 const { error, success } = require("../middlewares/responseWrapper");
 const Enquiry = require("../models/enquiryModel");
+const User = require("../models/userModel");
 const ValidateMongoDbId = require("../utils/validateMongodbId");
 
 const createEnquiry = async (req, res) => {
@@ -43,8 +44,16 @@ const getEnquiry = async (req, res) => {
   try {
     const { id } = req.params;
     ValidateMongoDbId(id);
-    const getEnquiry = await Enquiry.findById(id);
-    return res.send(success(200, getEnquiry));
+    const enquiry = await Enquiry.findById(id).populate("user");
+    if (!enquiry) {
+      return res.send(error(404, "Enquiry not found"));
+    }
+    const user = await User.findOne({ email: enquiry.email });
+    if (!user) {
+      return res.send(error(404, "User not found"));
+    }
+    enquiry.user = user;
+    return res.send(success(200, enquiry));
   } catch (e) {
     return res.send(error(500, e.message));
   }

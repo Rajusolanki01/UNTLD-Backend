@@ -11,12 +11,12 @@ const {
 } = require("../controllers/productController");
 const { isAdmin, authMiddleware } = require("../middlewares/authMiddleware");
 
+router.get("/:id", getSingleProduct);
 router.post("/", authMiddleware, isAdmin, createProduct);
 router.get("/", getAllProduct);
 router.put("/wishlist", authMiddleware, addToWishList);
-router.put("/rating", authMiddleware, rating);
-router.get("/:id", getSingleProduct);
-router.put("/:id", authMiddleware, isAdmin, updateaProduct);
 router.delete("/:id", authMiddleware, isAdmin, deleteaProduct);
+router.put("/rating", authMiddleware, rating);
+router.put("/:id", authMiddleware, isAdmin, updateaProduct);
 
 module.exports = router;

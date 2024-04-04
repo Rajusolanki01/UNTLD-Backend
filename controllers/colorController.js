@@ -7,7 +7,7 @@ const createColor = async (req, res) => {
     const newColor = await Color.create(req.body);
     return res.send(success(201, `${newColor.title} color is create`));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 
@@ -20,7 +20,7 @@ const updateColor = async (req, res) => {
     });
     return res.send(success(201, `${updatedColor.title} color is update`));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 
@@ -31,7 +31,7 @@ const getColor = async (req, res) => {
     const getaColor = await Color.findById(id);
     return res.send(success(200, getaColor));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 
@@ -40,7 +40,7 @@ const getallColor = async (req, res) => {
     const getallColor = await Color.find();
     return res.send(success(200, getallColor));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 
@@ -51,7 +51,7 @@ const deleteColor = async (req, res) => {
     const deletedColor = await Color.findByIdAndDelete(id);
     return res.send(success(201, `${deletedColor.title} Color is Deleted`));
   } catch (e) {
-    return res.send(error(200, e.message));
+    return res.send(error(500, e.message));
   }
 };
 module.exports = {
