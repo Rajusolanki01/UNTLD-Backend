@@ -75,7 +75,7 @@ const getSingleProduct = async (req, res) => {
     return res.send(success(200, findProuduct));
   } catch (e) {
     return res.send(error(500, e.message));
-  } 
+  }
 };
 
 // * Update A Product *//
@@ -155,7 +155,8 @@ const addToWishList = async (req, res) => {
           new: true,
         }
       );
-      return res.send(success(200, user));
+
+      return res.send(success(200, user.wishList));
     }
   } catch (e) {
     return res.send(error(500, e.message));

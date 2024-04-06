@@ -51,6 +51,7 @@ var productSchema = new mongoose.Schema(
         comment: String,
         postedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       },
+      { timestamps: true },
     ],
     totalrating: {
       type: String,

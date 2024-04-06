@@ -10,7 +10,7 @@ const sendEmails = require("./emailController");
 const crypto = require("crypto");
 const Product = require("../models/productModel");
 const Address = require("../models/addressModel");
-const Cart = require("../models/cartModel");
+const Carts = require("../models/cartModel");
 const Order = require("../models/orderModel");
 const Coupon = require("../models/couponModel");
 const uniqid = require("uniqid");
@@ -228,7 +228,6 @@ const getSingleUser = async (req, res) => {
   try {
     const { id } = req.params;
     ValidateMongoDbId(id);
-
     const getaUser = await User.findById(id);
     return res.send(success(200, getaUser));
   } catch (e) {
@@ -453,68 +452,97 @@ const getWishList = async (req, res) => {
 
 //* Add to User Cart controller *//
 
+// const addToCart = async (req, res) => {
+//   try {
+//     const { cart } = req.body;
+//     const { _id } = req.user;
+//     ValidateMongoDbId(_id);
+
+//     let products = [];
+//     const user = await User.findById(_id);
+
+//     //* check if user already has a cart
+//     const alreadyExistCart = await Cart.findOne({ orderby: user._id });
+//     if (alreadyExistCart) {
+//       await Cart.deleteOne({ _id: alreadyExistCart._id });
+//     }
+
+//     for (let i = 0; i < cart.length; i++) {
+//       let object = {};
+//       object.product = cart[i]._id;
+//       object.count = cart[i].count;
+//       object.color = cart[i].color;
+
+//       //* Find the product by ID
+//       const getProduct = await Product.findById(cart[i]._id);
+
+//       //* Check if the product is found
+//       if (!getProduct) {
+//         return res.send(
+//           error(404, `Product with ID ${cart[i].product} not found`)
+//         );
+//       }
+
+//       //* Access the 'price' property if the product is found
+//       object.price = getProduct.price;
+//       products.push(object);
+
+//       //* Remove the product from wishlist if it exists
+//       user.wishList.pull(cart[i]._id);
+//     }
+
+//     let cartTotal = 0;
+//     for (let i = 0; i < products.length; i++) {
+//       cartTotal = cartTotal + products[i].price * products[i].count;
+//     }
+
+//     let newCart = await Cart.create({
+//       products,
+//       cartTotal,
+//       orderby: user?._id,
+//     });
+
+//     await newCart.save();
+
+//     let updateUser = await User.findByIdAndUpdate(
+//       _id,
+//       {
+//         $push: { cart: newCart },
+//       },
+//       {
+//         new: true,
+//       }
+//     );
+//     return res.send(success(201, "Product is Add To Cart"));
+//   } catch (e) {
+//     return res.send(error(500, e.message));
+//   }
+// };
+
 const addToCart = async (req, res) => {
   try {
-    const { cart } = req.body;
+    const { productId, quantity, price, color } = req.body;
     const { _id } = req.user;
     ValidateMongoDbId(_id);
 
-    let products = [];
-    const user = await User.findById(_id);
+    let newCart = await new Cart({
+      userId: _id,
+      productId,
+      quantity,
+      price,
+      color,
+    }).save();
 
-    //* check if user already has a cart
-    const alreadyExistCart = await Cart.findOne({ orderby: user._id });
-    if (alreadyExistCart) {
-      await Cart.deleteOne({ _id: alreadyExistCart._id });
-    }
-
-    for (let i = 0; i < cart.length; i++) {
-      let object = {};
-      object.product = cart[i]._id;
-      object.count = cart[i].count;
-      object.color = cart[i].color;
-
-      //* Find the product by ID
-      const getProduct = await Product.findById(cart[i]._id);
-
-      //* Check if the product is found
-      if (!getProduct) {
-        return res.send(
-          error(404, `Product with ID ${cart[i].product} not found`)
-        );
-      }
-
-      //* Access the 'price' property if the product is found
-      object.price = getProduct.price;
-      products.push(object);
-
-      //* Remove the product from wishlist if it exists
-      user.wishList.pull(cart[i]._id);
-    }
-
-    let cartTotal = 0;
-    for (let i = 0; i < products.length; i++) {
-      cartTotal = cartTotal + products[i].price * products[i].count;
-    }
-
-    let newCart = await Cart.create({
-      products,
-      cartTotal,
-      orderby: user?._id,
-    });
-
-    await newCart.save();
-
-    let updateUser = await User.findByIdAndUpdate(
-      _id,
-      {
-        $push: { cart: newCart },
-      },
-      {
-        new: true,
-      }
-    );
-    return res.send(success(201, "Product is Add To Cart"));
+    // let updateUser = await User.findByIdAndUpdate(
+    //   _id,
+    //   {
+    //     $push: { cart: newCart },
+    //   },
+    //   {
+    //     new: true,
+    //   }
+    // );
+    return res.send(success(201, newCart));
   } catch (e) {
     return res.send(error(500, e.message));
   }
@@ -524,13 +552,11 @@ const addToCart = async (req, res) => {
 
 const getaUserCart = async (req, res) => {
   try {
-    console.log("heloo");
     const { _id } = req.user;
-    console.log(_id);
     ValidateMongoDbId(_id);
 
     const cart = await Cart.findOne({ orderby: _id }).populate(
-      "products.product"
+      "products.productId"
     );
 
     if (cart) {
