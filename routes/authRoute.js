@@ -17,16 +17,24 @@ const {
   getWishList,
   saveAddress,
   addToCart,
-  emptyUserCart,
-  applyCoupon,
+  // applyCoupon,
   createOrder,
   getAllOrders,
   getOrderByUserId,
   updateOrderStatus,
   getaUserCart,
-  getOrders,
+  removeProductFromCart,
+  updateProductQuantityFromCart,
+  getMyOrders,
+  getMonthWiseOrder,
+  getYearlyTotalOrders,
+  forgotPasswordTokenForAdmin,
 } = require("../controllers/userController");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+const {
+  checkout,
+  paymentVerifiction,
+} = require("../controllers/paymentController");
 const router = express.Router();
 
 //* CREATE
@@ -42,19 +50,53 @@ router.post("/admin-login", adminLogin);
 
 router.post("/add-to-cart", authMiddleware, addToCart);
 
-//* POST USER CART APPLY COUPON...
+//* UPDATE PRODUCT QUANITTY IN CART....
+router.put(
+  "/update-product-cart/:cartItemId/:newQuantity",
+  authMiddleware,
+  updateProductQuantityFromCart
+);
 
-router.post("/cart/applycoupon", authMiddleware, applyCoupon);
+//* REMOVE ITEM FROM CART.....
+
+router.delete(
+  "/remove-product-cart/:cartItemId",
+  authMiddleware,
+  removeProductFromCart
+);
+
+// router.post("/cart/applycoupon", authMiddleware, applyCoupon);
 
 //* POST USER CREATE ORDER...
 
-router.post("/cart/cash-order", authMiddleware, createOrder);
+router.post("/cart/create-order", authMiddleware, createOrder);
+
+router.get("/cart/getmyOrders", authMiddleware, getMyOrders);
+
+//* RAZORPYA CHECKOUT  ORDER...
+
+router.post("/order/checkout", authMiddleware, checkout);
+
+//* RAZORPAY PAYMENTID ORDERID ORDER...
+
+router.post("/order/paymentVerifiction", authMiddleware, paymentVerifiction);
+
+//*GET MONTHWISE ORDERS...
+
+router.get("/order/getMonthWiseOrderIncome", authMiddleware, getMonthWiseOrder);
+
+//*GET YEARLY TOTAL ORDERS COUNT...
+
+router.get("/order/getYearTotalOrders", authMiddleware, getYearlyTotalOrders);
 
 //* UPDATE USER PASSWORD
 router.put("/update-password", authMiddleware, updatePassword);
 
 //* FORGOT USER PASSWORD
 router.post("/forgot-password-token", forgotPasswordToken);
+
+//* FORGOT USER PASSWORD FOR ADMIN
+router.post("/admin/forgot-password-token", forgotPasswordTokenForAdmin);
 
 //* RESET USER PASSWORD
 router.put("/reset-password/:token", resetPassword);
@@ -65,13 +107,9 @@ router.get("/refresh-token", refreshAccessToken);
 //* GET ALL USER
 router.get("/all-users", getAllUser);
 
-//* GET SINGLE ORDERs
-
-router.get("/get-orders", authMiddleware, getOrders);
-
 //* GET ALL USER ORDERS
 
-router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
+router.get("/order/getallorders", authMiddleware, isAdmin, getAllOrders);
 
 //* GET ALL ORDER BY USER ID
 
@@ -88,7 +126,7 @@ router.get("/usercart", authMiddleware, getaUserCart);
 router.get("/logout", logoutUser);
 
 //* GET A SINGLE USER DETAILS
-router.get("/:id", authMiddleware, isAdmin, getSingleUser);
+router.get("/:id", authMiddleware, getSingleUser);
 
 //* UPDATE USER
 router.put("/edit-user", authMiddleware, updateaUser);
@@ -112,9 +150,7 @@ router.put(
 
 //* USER CART EMPTY *//
 
-router.delete("/empty-cart", authMiddleware, emptyUserCart);
-
 //* DELETE USER
-router.delete("/:id", authMiddleware, deleteaUser);
+router.delete("/delete/:id", authMiddleware, deleteaUser);
 
 module.exports = router;

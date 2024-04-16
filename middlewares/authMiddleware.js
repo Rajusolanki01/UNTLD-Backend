@@ -24,7 +24,7 @@ const authMiddleware = async (req, res, next) => {
       return res.send(error(401, "Invalid access key please login again"));
     }
   } else {
-    return res.send(error(401, "authorization header is required"));
+    return res.send(error(404, "Please Login to Untld."));
   }
 };
 

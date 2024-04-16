@@ -3,7 +3,9 @@ const nodemailer = require("nodemailer");
 const sendEmails = async (data, req, res) => {
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp-mail.outlook.com",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.AUTH_EMAIL,
         pass: process.env.AUTH_PASSWORD,
@@ -11,7 +13,7 @@ const sendEmails = async (data, req, res) => {
     });
 
     const info = await transporter.sendMail({
-      from: `"UNTLD. 🔥" ${process.env.AUTH_EMAIL}`,
+      from: `"UNTLD." ${process.env.AUTH_EMAIL}`,
       to: data.to,
       subject: data.subject,
       text: data.text,
@@ -26,3 +28,5 @@ const sendEmails = async (data, req, res) => {
 };
 
 module.exports = sendEmails;
+
+

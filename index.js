@@ -25,12 +25,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("common"));
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: ["http://localhost:3000", "http://localhost:3001"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use("/api/user", authRouter);
 app.use("/api/product", productRouter);
