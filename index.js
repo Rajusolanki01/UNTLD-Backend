@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("common"));
 app.use(cookieParser());
 const corsOptions = {
-  origin: [UNTLD_BASE_URL, UNTLD_ADMIN_BASE_URLL],
+  origin: [UNTLD_BASE_URLL, UNTLD_ADMIN_BASE_URLL],
   credentials: true,
 };
 
