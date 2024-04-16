@@ -16,8 +16,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const colors = require("colors");
 const cors = require("cors");
-const path = require("path"); // Import the 'path' module
-
+const path = require("path");
 dotenv.config();
 const app = express();
 
@@ -45,8 +44,6 @@ app.use("/api/color", colorRouter);
 app.use("/api/coupon", couponRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/enquiry", enquiryRouter);
-
-const __dirname = path.resolve(path.dirname(""));
 
 // Serve static files from the 'build' directory
 app.use(express.static(path.join(__dirname, "view/build")));
