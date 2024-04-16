@@ -20,7 +20,7 @@ const path = require("path");
 dotenv.config();
 const app = express();
 
-const { UNTLD_BASE_URL, UNTLD_ADMIN_BASE_URLL } = process.env;
+const { UNTLD_BASE_URLL, UNTLD_ADMIN_BASE_URLL } = process.env;
 
 //* Setup Middlewares...
 app.use(bodyParser.json());
