@@ -16,7 +16,7 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const { UNTLD_BASE_URLL_NETLIFY, UNTLD_ADMIN_BASE_URLL } = process.env;
+const { UNTLD_BASE_URLL_VARCEL, UNTLD_ADMIN_BASE_URLL } = process.env;
 //* Create & Login Auth User Api's *//
 
 const createUser = async (req, res) => {
@@ -393,7 +393,7 @@ const forgotPasswordToken = async (req, res) => {
       </div>
       <div style="font-size: 16px; color: #333; text-align: center;">
         Hey ${user.firstname}, here's your password reset link! Valid till 10 mintues from now
-       <a href='${UNTLD_BASE_URLL_NETLIFY}/reset-password/${token}'>Click
+       <a href='${UNTLD_BASE_URLL_VARCEL}/reset-password/${token}'>Click
       </div>
     `;
     const data = {
