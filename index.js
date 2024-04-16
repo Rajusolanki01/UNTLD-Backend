@@ -20,7 +20,7 @@ const path = require("path");
 dotenv.config();
 const app = express();
 
-const { UNTLD_BASE_URL, UNTLD_ADMIN_BASE_URL } = process.env;
+const { UNTLD_BASE_URL, UNTLD_ADMIN_BASE_URLL } = process.env;
 
 //* Setup Middlewares...
 app.use(bodyParser.json());
@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("common"));
 app.use(cookieParser());
 const corsOptions = {
-  origin: [UNTLD_BASE_URL, UNTLD_ADMIN_BASE_URL],
+  origin: [UNTLD_BASE_URL, UNTLD_ADMIN_BASE_URLL],
   credentials: true,
 };
 
