@@ -16,6 +16,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const colors = require("colors");
 const cors = require("cors");
+const path = require("path"); // Import the 'path' module
 
 dotenv.config();
 const app = express();
@@ -44,6 +45,14 @@ app.use("/api/color", colorRouter);
 app.use("/api/coupon", couponRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/enquiry", enquiryRouter);
+
+// Serve static files from the 'build' directory
+app.use(express.static(path.join(__dirname, "build")));
+
+// Catch-all route to serve index.html for any route not handled above
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 dbConnect();
 
