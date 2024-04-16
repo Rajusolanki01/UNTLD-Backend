@@ -4,15 +4,13 @@ const {
 } = require("../config/jwttoken");
 const { error, success } = require("../middlewares/responseWrapper");
 const User = require("../models/userModel");
-const ValidateMongoDbId = require("../utils/validateMongoDbId");
+const ValidateMongoDbId = require("../utils/validateMongodbId.js");
 const jwt = require("jsonwebtoken");
 const sendEmails = require("./emailController");
 const crypto = require("crypto");
-// const Product = require("../models/productModel");
 const Address = require("../models/addressModel");
 const Carts = require("../models/cartModel");
 const Order = require("../models/orderModel");
-// const Coupon = require("../models/couponModel");
 const uniqid = require("uniqid");
 const dotenv = require("dotenv");
 
@@ -717,43 +715,6 @@ const getYearlyTotalOrders = async (req, res) => {
   }
 };
 
-// //*Apply Coupon User Cart controller *//
-
-// const applyCoupon = async (req, res) => {
-//   try {
-//     const { coupon } = req.body;
-//     const { _id } = req.user;
-//     ValidateMongoDbId(_id);
-
-//     const validCoupon = await Coupon.findOne({ name: coupon });
-
-//     if (validCoupon === null) {
-//       res.send(error(403, "Invalid Coupon"));
-//     }
-
-//     const user = await User.findById({ _id });
-
-//     let { cartTotal } = await Cart.findOne({
-//       orderby: user._id,
-//     }).populate("products.product");
-
-//     let totalAfterDiscount = (
-//       cartTotal -
-//       (cartTotal * validCoupon.discount) / 100
-//     ).toFixed(2);
-
-//     await Carts.findOneAndUpdate(
-//       { orderby: user._id },
-//       { totalAfterDiscount },
-//       { new: true }
-//     );
-//     return res.send(
-//       success(201, `Your Total Disocunt is ${totalAfterDiscount}`)
-//     );
-//   } catch (e) {
-//     return res.send(error(500, e.message));
-//   }
-// };
 
 // //*Update Order By User ID  controller *//
 
@@ -816,7 +777,6 @@ module.exports = {
   getWishList,
   addToCart,
   getaUserCart,
-  // applyCoupon,
   createOrder,
   getMyOrders,
   getMonthWiseOrder,

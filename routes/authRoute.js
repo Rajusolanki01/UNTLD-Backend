@@ -17,7 +17,6 @@ const {
   getWishList,
   saveAddress,
   addToCart,
-  // applyCoupon,
   createOrder,
   getAllOrders,
   getOrderByUserId,
@@ -65,7 +64,6 @@ router.delete(
   removeProductFromCart
 );
 
-// router.post("/cart/applycoupon", authMiddleware, applyCoupon);
 
 //* POST USER CREATE ORDER...
 
