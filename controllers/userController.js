@@ -8,13 +8,17 @@ const ValidateMongoDbId = require("../utils/validateMongoDbId");
 const jwt = require("jsonwebtoken");
 const sendEmails = require("./emailController");
 const crypto = require("crypto");
-const Product = require("../models/productModel");
+// const Product = require("../models/productModel");
 const Address = require("../models/addressModel");
 const Carts = require("../models/cartModel");
 const Order = require("../models/orderModel");
-const Coupon = require("../models/couponModel");
+// const Coupon = require("../models/couponModel");
 const uniqid = require("uniqid");
+const dotenv = require("dotenv");
 
+dotenv.config();
+
+const { UNTLD_BASE_URL, UNTLD_ADMIN_BASE_URL } = process.env;
 //* Create & Login Auth User Api's *//
 
 const createUser = async (req, res) => {
@@ -391,7 +395,7 @@ const forgotPasswordToken = async (req, res) => {
       </div>
       <div style="font-size: 16px; color: #333; text-align: center;">
         Hey ${user.firstname}, here's your password reset link! Valid till 10 mintues from now
-       <a href='http://localhost:3000/reset-password/${token}'>Click
+       <a href='${UNTLD_BASE_URL}/reset-password/${token}'>Click
       </div>
     `;
     const data = {
@@ -442,7 +446,7 @@ const forgotPasswordTokenForAdmin = async (req, res) => {
       </div>
       <div style="font-size: 16px; color: #333; text-align: center;">
         Hey ${user.firstname}, here's your password reset link! Valid till 10 mintues from now
-       <a href='http://localhost:3001/reset-password/${token}'>Click
+       <a href='${UNTLD_ADMIN_BASE_URL}/reset-password/${token}'>Click
       </div>
     `;
     const data = {
@@ -457,7 +461,6 @@ const forgotPasswordTokenForAdmin = async (req, res) => {
     return res.send(error(500, e.message));
   }
 };
-
 
 //* get wishlist controller *//
 const getWishList = async (req, res) => {

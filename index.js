@@ -20,13 +20,15 @@ const cors = require("cors");
 dotenv.config();
 const app = express();
 
+const { UNTLD_BASE_URL, UNTLD_ADMIN_BASE_URL } = process.env;
+
 //* Setup Middlewares...
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("common"));
 app.use(cookieParser());
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://localhost:3001"],
+  origin: [UNTLD_BASE_URL, UNTLD_ADMIN_BASE_URL],
   credentials: true,
 };
 
