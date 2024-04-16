@@ -46,12 +46,14 @@ app.use("/api/coupon", couponRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/enquiry", enquiryRouter);
 
+const __dirname = path.resolve(path.dirname(""));
+
 // Serve static files from the 'build' directory
-app.use(express.static(path.join(__dirname, "build")));
+app.use(express.static(path.join(__dirname, "view/build")));
 
 // Catch-all route to serve index.html for any route not handled above
 app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
+  res.sendFile(path.join(__dirname, "view/build", "index.html"));
 });
 
 dbConnect();
