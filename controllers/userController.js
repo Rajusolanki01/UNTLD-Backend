@@ -546,7 +546,6 @@ const updateProductQuantityFromCart = async (req, res) => {
     return res.send(error(500, e.message));
   }
 };
-
 const createOrder = async (req, res) => {
   try {
     const { _id } = req.user;
@@ -570,11 +569,23 @@ const createOrder = async (req, res) => {
     });
 
     const existingUser = await User.findById(_id);
-    const hasExistingShippingInfo = existingUser.address.map(
-      (address) => address.firstiname === shippingInfo.firstiname
-    );
 
-    if (hasExistingShippingInfo) {
+    let hasExistingShippingInfo = false;
+
+    if (existingUser.address.length > 0) {
+      hasExistingShippingInfo = existingUser.address.some(
+        (address) =>
+          address.firstname === shippingInfo.firstname &&
+          address.lastname === shippingInfo.lastname &&
+          address.address === shippingInfo.address &&
+          address.city === shippingInfo.city &&
+          address.state === shippingInfo.state &&
+          address.zip === shippingInfo.zip
+      );
+    }
+
+
+    if (!hasExistingShippingInfo) {
       await User.findByIdAndUpdate(
         _id,
         {
@@ -714,7 +725,6 @@ const getYearlyTotalOrders = async (req, res) => {
     return res.send(error(500, e.message));
   }
 };
-
 
 // //*Update Order By User ID  controller *//
 
