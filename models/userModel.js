@@ -65,6 +65,8 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+//* Password Matched 
+
 userSchema.methods.isPasswordMatched = function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);
 };

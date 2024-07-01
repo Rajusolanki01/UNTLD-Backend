@@ -16,6 +16,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const colors = require("colors");
 const cors = require("cors");
+const { default: job } = require("./cron/cron.js");
 dotenv.config();
 const app = express();
 
@@ -45,6 +46,8 @@ app.use("/api/upload", uploadRouter);
 app.use("/api/enquiry", enquiryRouter);
 
 dbConnect();
+
+job.start()
 
 const PORT = process.env.PORT || 8001;
 

@@ -67,11 +67,15 @@ const loginUser = async (req, res) => {
       },
       { new: true }
     );
+
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       maxAge: 72 * 60 * 60 * 1000,
     });
+
+
     if (findUser && (await findUser.isPasswordMatched(password))) {
       return res.send(
         success(200, {
@@ -471,6 +475,7 @@ const getWishList = async (req, res) => {
   }
 };
 
+
 const addToCart = async (req, res) => {
   try {
     const { color, quantity, price, productId } = req.body;
@@ -484,6 +489,7 @@ const addToCart = async (req, res) => {
       price,
       color,
     }).save();
+
     return res.send(success(200, newCart));
   } catch (e) {
     return res.send(error(500, e.message));
@@ -583,7 +589,6 @@ const createOrder = async (req, res) => {
           address.zip === shippingInfo.zip
       );
     }
-
 
     if (!hasExistingShippingInfo) {
       await User.findByIdAndUpdate(
